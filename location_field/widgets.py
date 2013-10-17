@@ -10,18 +10,17 @@ class LocationWidget(widgets.TextInput):
         super(LocationWidget, self).__init__(attrs)
 
     def render(self, name, value, attrs=None):
-        if value is not None:
+        try:
             if isinstance(value, basestring):
                 lat, lng = value.split(',')
             else:
                 lng = value.x
                 lat = value.y
-
             value = '%s,%s' % (
                 float(lat),
                 float(lng),
             )
-        else:
+        except:
             value = ''
 
         if '-' not in name:
@@ -53,5 +52,5 @@ class LocationWidget(widgets.TextInput):
         # Use schemaless URL so it works with both, http and https websites
         js = (
             '//maps.google.com/maps/api/js?sensor=false',
-            '/location_field/media/form.js',
+            'location_field/form.js',
         )
