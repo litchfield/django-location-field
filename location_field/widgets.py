@@ -1,57 +1,40 @@
-from django.conf import settings
 from django.forms import widgets
+from django.contrib.gis.geos import Point
 from django.utils.safestring import mark_safe
 
+HTML = u"""
+<button type="button" id="map_btn_%(name)s">Geocode</button>
+<div style="margin:4px 0 0 0">
+    <label></label>
+    <div id="map_%(name)s" style="width: 500px; height: 250px"></div>
+</div>
+<script type="text/javascript">
+location_field_load('%(name)s', '%(fields)s', %(zoom)d, '%(suffix)s')
+</script>
+"""
 
 class LocationWidget(widgets.TextInput):
-    def __init__(self, attrs=None, based_fields=None, zoom=None, suffix='', **kwargs):
+    def __init__(self, attrs=None, based_fields=None, zoom=None, suffix=None, **kwargs):
         self.based_fields = based_fields
         self.zoom = zoom
         self.suffix = suffix
         super(LocationWidget, self).__init__(attrs)
 
     def render(self, name, value, attrs=None):
-        try:
-            if isinstance(value, basestring):
-                lat, lng = value.split(',')
+        if not isinstance(value, (str, unicode)):
+            if value is not None:
+                value = '%s,%s' % (float(value[1]), float(value[0]))
             else:
-                lng = value.x
-                lat = value.y
-            value = '%s,%s' % (
-                float(lat),
-                float(lng),
-            )
-        except:
-            value = ''
-
-        if '-' not in name:
-            prefix = ''
-        else:
-            prefix = name[:name.rindex('-') + 1]
-
-        based_fields = ','.join(
-            map(lambda f: '#id_' + prefix + f.name, self.based_fields))
-
-        attrs = attrs or {}
-        attrs['data-location-widget'] = name
-        attrs['data-based-fields'] = based_fields
-        attrs['data-zoom'] = self.zoom
-        attrs['data-suffix'] = self.suffix
-        attrs['data-map'] = '#map_' + name
-
+                value = ''
+        fields = ','.join(map(lambda f: '#id_%s' % f.name, self.based_fields));
         text_input = super(LocationWidget, self).render(name, value, attrs)
-
-        map_div = u'''
-<div style="margin:4px 0 0 0">
-    <label></label>
-    <div id="map_%(name)s" style="width: 500px; height: 250px"></div>
-</div>
-'''
-        return mark_safe(text_input + map_div % {'name': name})
+        zoom = self.zoom
+        suffix = self.suffix
+        return mark_safe(text_input + HTML % locals())
 
     class Media:
-        # Use schemaless URL so it works with both, http and https websites
         js = (
-            '//maps.google.com/maps/api/js?sensor=false',
-            settings.STATIC_URL + 'location_field/js/form.js',
+            #'http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js',
+            'http://maps.google.com/maps/api/js?sensor=false',
+            'location_field/form.js',
         )
