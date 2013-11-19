@@ -1,0 +1,10 @@
+MANIFEST.in
+django_location_field.egg-info/PKG-INFO
+django_location_field.egg-info/SOURCES.txt
+django_location_field.egg-info/dependency_links.txt
+django_location_field.egg-info/top_level.txt
+location_field/__init__.py
+location_field/forms.py
+location_field/models.py
+location_field/widgets.py
+location_field/static/location_field/form.js

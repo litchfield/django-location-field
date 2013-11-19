@@ -1,0 +1,17 @@
+Metadata-Version: 1.1
+Name: django-location-field
+Version: 1.1
+Summary: Location field for Django
+Home-page: http://github.com/codasus/django-location-field
+Author: Codasus Technologies
+Author-email: contact@codasus.com
+License: MIT License
+Description: This module provides a location field for Django applications.
+Platform: any
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: Web Environment
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Framework :: Django
