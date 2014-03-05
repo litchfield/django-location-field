@@ -1,6 +1,4 @@
-from django.contrib.gis.db.models import PointField
 from django.db.models import CharField
-
 from location_field import forms
 
 
@@ -20,16 +18,6 @@ class BaseLocationField(object):
             **kwargs)
 
 
-class LocationField(BaseLocationField, PointField):
-    formfield_class = forms.LocationField
-
-    def __init__(self, based_fields=None, zoom=None, suffix='', *args, **kwargs):
-        super(LocationField, self).__init__(based_fields=based_fields,
-                                            zoom=zoom, suffix=suffix, *args, **kwargs)
-
-        PointField.__init__(self, *args, **kwargs)
-
-
 class PlainLocationField(BaseLocationField, CharField):
     formfield_class = forms.PlainLocationField
 
@@ -41,6 +29,21 @@ class PlainLocationField(BaseLocationField, CharField):
 
         CharField.__init__(self, max_length=max_length, *args, **kwargs)
     
+
+try:
+    from django.contrib.gis.db.models import PointField
+
+    class LocationField(BaseLocationField, PointField):
+        formfield_class = forms.LocationField
+
+        def __init__(self, based_fields=None, zoom=None, suffix='', *args, **kwargs):
+            super(LocationField, self).__init__(based_fields=based_fields,
+                                                zoom=zoom, suffix=suffix, *args, **kwargs)
+
+            PointField.__init__(self, *args, **kwargs)
+except ImportError:
+    LocationField = PlainLocationField
+
 
 # south compatibility
 try:

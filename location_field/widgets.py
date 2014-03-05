@@ -1,5 +1,4 @@
 from django.forms import widgets
-from django.contrib.gis.geos import Point
 from django.utils.safestring import mark_safe
 
 HTML = u"""
